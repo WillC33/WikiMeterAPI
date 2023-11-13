@@ -4,7 +4,6 @@ using WikiMeterApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<ITotalArticlesService, TotalArticlesService>();
 builder.Services.AddScoped<IWikipediaDataService, WikipediaDataService>();
 builder.Services.AddHttpClient();
 builder.Services.AddCors();
