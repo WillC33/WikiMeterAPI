@@ -15,8 +15,8 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     options.AddFixedWindowLimiter(policyName: "fixed", fixedOptions =>
     {
-        fixedOptions.PermitLimit = 4;
-        fixedOptions.Window = TimeSpan.FromSeconds(12);
+        fixedOptions.PermitLimit = 100;
+        fixedOptions.Window = TimeSpan.FromSeconds(10);
         fixedOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         fixedOptions.QueueLimit = 2;
     });
