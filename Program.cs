@@ -13,14 +13,12 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddTokenBucketLimiter("token", bucketOptions =>
+    options.AddFixedWindowLimiter(policyName: "fixed", fixedOptions =>
     {
-        bucketOptions.TokenLimit = 100;
-        bucketOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        bucketOptions.QueueLimit = 5;
-        bucketOptions.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
-        bucketOptions.TokensPerPeriod = 20;
-        bucketOptions.AutoReplenishment = true;
+        fixedOptions.PermitLimit = 4;
+        fixedOptions.Window = TimeSpan.FromSeconds(12);
+        fixedOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        fixedOptions.QueueLimit = 2;
     });
 });
 
@@ -34,6 +32,6 @@ app.UseRateLimiter();
 app.MapGet("/api/wikipedia", async (IWikipediaDataService wikipediaDataService) =>
         await wikipediaDataService.GetWikipediaDataAsync()
     )
-    .RequireRateLimiting("token");
+    .RequireRateLimiting("fixed");
 
 app.Run();
